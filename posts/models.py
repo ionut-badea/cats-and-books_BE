@@ -119,9 +119,12 @@ class Article(models.Model):
                                  db_column='category',
                                  blank=True,
                                  null=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag,
+                                  blank=True)
     draft = models.BooleanField(_('draft'),
                                 default=True)
+    archived = models.BooleanField(_('archived'),
+                                   default=False)
     published = models.DateField(_('published'),
                                  blank=True,
                                  null=True)

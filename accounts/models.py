@@ -14,8 +14,12 @@ class User(AbstractUser):
     email = models.CharField(_('email'),
                              max_length=50,
                              unique=True)
+    full_name = models.CharField(_('full name'),
+                                 max_length=50,
+                                 blank=True,
+                                 null=True,
+                                 editable=False)
     bio = models.TextField(_('bio'),
-                           max_length=200,
                            blank=True,
                            null=True)
     avatar = models.ImageField(_('avatar'),
@@ -25,12 +29,13 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    def save(self, *args, **kwargs):
+        self.full_name = f'{self.last_name} {self.first_name}'
+        return super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
         default_related_name = 'users'
         ordering = ['username']
         get_latest_by = ['-date_joined']
-
-    def get_absolute_url(self):
-        pass
