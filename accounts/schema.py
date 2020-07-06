@@ -141,7 +141,7 @@ class UserNode(DjangoObjectType):
         interfaces = (relay.Node, )
         connection_class = Connection
         filter_fields = {
-            'username': ['icontains'],
+            'username': ['exact', 'icontains'],
             'email': ['icontains'],
             'first_name': ['icontains'],
             'last_name': ['icontains'],
@@ -211,7 +211,6 @@ class Query(ObjectType):
     permission = relay.Node.Field(PermissionNode)
     permissions = DjangoFilterConnectionField(PermissionNode)
 
-    @superuser_required
     def resolve_users(self, info, **kwargs):
         return User.objects.all()
 

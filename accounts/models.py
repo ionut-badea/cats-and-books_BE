@@ -14,23 +14,26 @@ class User(AbstractUser):
     email = models.CharField(_('email'),
                              max_length=50,
                              unique=True)
-    full_name = models.CharField(_('full name'),
-                                 max_length=50,
-                                 blank=True,
-                                 null=True,
-                                 editable=False)
+    first_name = models.CharField(_('first name'),
+                                  max_length=25,
+                                  blank=True)
+    last_name = models.CharField(_('last name'),
+                                 max_length=25,
+                                 blank=True)
+    name = models.CharField(_('full name'),
+                            max_length=50,
+                            blank=True,
+                            editable=False)
     bio = models.TextField(_('bio'),
-                           blank=True,
-                           null=True)
+                           blank=True)
     avatar = models.ImageField(_('avatar'),
                                upload_to='images/users',
-                               blank=True,
-                               null=True)
+                               blank=True)
 
     objects = UserManager()
 
     def save(self, *args, **kwargs):
-        self.full_name = f'{self.last_name} {self.first_name}'
+        self.name = f'{self.first_name} {self.last_name}'
         return super().save(*args, **kwargs)
 
     class Meta:

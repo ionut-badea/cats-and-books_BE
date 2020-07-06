@@ -1,9 +1,11 @@
 from django.db import models
+from django.db.models.functions import Extract
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import slugify
 from blog.settings import AUTH_USER_MODEL as User
 from django.utils import timezone
 from django.urls import reverse
+import datetime
 import uuid
 
 
@@ -17,9 +19,7 @@ class Category(models.Model):
                                db_column='author')
     name = models.CharField(_('category'),
                             max_length=50,
-                            unique=True,
-                            blank=False,
-                            null=False)
+                            unique=True)
     slug = models.SlugField(_('slug'),
                             unique=True,
                             max_length=50)
@@ -44,9 +44,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolut_url(self):
-        pass
-
 
 class Tag(models.Model):
     uid = models.UUIDField(_('id'),
@@ -58,9 +55,7 @@ class Tag(models.Model):
                                db_column='author')
     name = models.CharField(_('tag'),
                             max_length=25,
-                            unique=True,
-                            blank=False,
-                            null=False)
+                            unique=True)
     slug = models.SlugField(_('slug'),
                             max_length=25,
                             unique=True)
@@ -85,9 +80,6 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolut_url(self):
-        pass
-
 
 class Article(models.Model):
     uid = models.UUIDField(_('id'),
@@ -99,35 +91,34 @@ class Article(models.Model):
                                db_column='author')
     title = models.CharField(_('title'),
                              max_length=150,
-                             unique=True,
-                             blank=False,
-                             null=False)
+                             unique=True)
     slug = models.SlugField(_('slug'),
                             max_length=150,
                             unique=True)
     body = models.TextField(_('body'),
-                            unique=True,
-                            blank=True,
-                            null=True)
+                            blank=True)
     abstract = models.TextField(_('abstract'),
                                 max_length=303,
-                                unique=True,
-                                blank=True,
-                                null=True)
+                                blank=True)
     category = models.ForeignKey(Category,
                                  on_delete=models.DO_NOTHING,
                                  db_column='category',
-                                 blank=True,
-                                 null=True)
+                                 blank=True)
     tags = models.ManyToManyField(Tag,
                                   blank=True)
     draft = models.BooleanField(_('draft'),
                                 default=True)
-    archived = models.BooleanField(_('archived'),
-                                   default=False)
-    published = models.DateField(_('published'),
-                                 blank=True,
-                                 null=True)
+    published = models.DateTimeField(_('published'),
+                                     blank=True,
+                                     null=True)
+    year = models.PositiveIntegerField(_('year'),
+                                       blank=True,
+                                       null=True,
+                                       editable=False)
+    month = models.PositiveIntegerField(_('month'),
+                                        blank=True,
+                                        null=True,
+                                        editable=False)
     created = models.DateTimeField(_('created'),
                                    auto_now_add=timezone.now)
     updated = models.DateTimeField(_('updated'),
@@ -147,17 +138,16 @@ class Article(models.Model):
             self.abstract = f'{self.body[0:300]}...'
         elif(not self.abstract and len(self.body) < 300):
             self.abstract = f'{self.body}'
+        # if self.published:
+        #     print("published DATE", self.published)
+        #     self.year = Extract(self.published, 'year')
+        #     self.month = Extract(self.published, 'month')
         self.slug = slugify(self.title)
+
         return super(Article, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
-
-    def get_abstract(self):
-        return self.abstract
-
-    def get_absolut_url(self):
-        pass
 
 
 class Image(models.Model):
@@ -167,16 +157,12 @@ class Image(models.Model):
                            editable=False)
     name = models.CharField(_('name'),
                             max_length=50,
-                            unique=True,
-                            blank=False,
-                            null=False)
+                            unique=True)
     slug = models.SlugField(_('slug'),
                             max_length=50,
                             unique=True)
     url = models.ImageField(_('image'),
-                            upload_to='images/articles',
-                            blank=False,
-                            null=False)
+                            upload_to='images/articles')
     article = models.ForeignKey(Article,
                                 on_delete=models.CASCADE,
                                 db_column='article')
@@ -204,9 +190,6 @@ class Image(models.Model):
     def get_url(self):
         return self.url
 
-    def get_absolut_url(self):
-        pass
-
 
 class Comment(models.Model):
     uid = models.UUIDField(_('id'),
@@ -215,11 +198,8 @@ class Comment(models.Model):
                            editable=False)
     name = models.CharField(_('name'),
                             max_length=50,
-                            blank=True,
-                            null=True)
-    body = models.TextField(_('comment'),
-                            blank=False,
-                            null=False)
+                            blank=True)
+    body = models.TextField(_('comment'))
     reviewed = models.BooleanField(_('reviewed'),
                                    default=False)
     article = models.ForeignKey(Article,
@@ -241,6 +221,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.name}, {self.body}'
-
-    def get_absolut_url(self):
-        pass

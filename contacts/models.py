@@ -12,18 +12,13 @@ class Message(models.Model):
                            editable=False)
     name = models.CharField(_('name'),
                             max_length=25,
-                            blank=True,
-                            null=True)
+                            blank=True)
     email = models.CharField(_('email'),
-                             max_length=50,
-                             blank=False,
-                             null=False)
+                             max_length=50)
     reply = models.BooleanField(_('reply'),
                                 default=False)
     body = models.TextField(_('message'),
-                            max_length=500,
-                            blank=False,
-                            null=False)
+                            max_length=500)
     terms = models.BooleanField(_('terms'),
                                 default=False)
     created = models.DateTimeField(_('created'),
@@ -42,6 +37,3 @@ class Message(models.Model):
 
     def __str__(self):
         return f'{self.name}, {self.email}'
-
-    def get_absolute_url(self):
-        pass

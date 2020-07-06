@@ -11,13 +11,10 @@ class Subscriber(models.Model):
                            editable=False)
     name = models.CharField(_('name'),
                             max_length=25,
-                            blank=True,
-                            null=True)
+                            blank=True)
     email = models.CharField(_('email'),
                              max_length=50,
-                             unique=True,
-                             blank=False,
-                             null=False)
+                             unique=True)
     terms = models.BooleanField(_('terms and conditions'),
                                 default=False)
     status = models.BooleanField(_('subscribed'),
@@ -38,6 +35,3 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return f'{self.name}, {self.email}'
-
-    def get_absolute_url(self):
-        pass

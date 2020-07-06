@@ -59,6 +59,7 @@ class TagNode(DjangoObjectType):
         filter_fields = {
             'author': ['exact'],
             'name': ['icontains'],
+            'slug': ['exact'],
             'articles': ['exact'],
             'created': ['gt', 'lt'],
             'updated': ['gt', 'lt']
@@ -127,8 +128,8 @@ class AddImage(relay.ClientIDMutation):
 
 class ArticleNode(DjangoObjectType):
     '''Get articles from database'''
-    images = graphene.List(ImageNode)
     tags = graphene.List(TagNode)
+    images = graphene.List(ImageNode)
     comments = graphene.List(CommentNode)
 
     class Meta:
@@ -208,8 +209,9 @@ class CategoryNode(DjangoObjectType):
         filter_fields = {
             'author': ['exact'],
             'name': ['icontains'],
+            'slug': ['exact'],
             'created': ['gt', 'lt'],
-            'updated': ['gt', 'lt']
+            'updated': ['gt', 'lt'],
         }
 
     @classmethod

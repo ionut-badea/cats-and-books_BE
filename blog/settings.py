@@ -101,7 +101,7 @@ GRAPHQL_JWT = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -161,7 +161,6 @@ INSTALLED_APPS = [
 
 # Security
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
-
 AUTH_USER_MODEL = os.getenv('DJANGO_AUTH_USER_MODEL')
 
 AUTHENTICATION_BACKENDS = [
@@ -187,10 +186,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CSRF_COOKIE_AGE = int(os.getenv('DJANGO_CSRF_COOKIE_AGE'))
 CSRF_COOKIE_HTTPONLY = bool(
-    strtobool(os.getenv('DJANGO_SESION_COOKIE_HTTPONLY')))
+    strtobool(os.getenv('DJANGO_CSRF_COOKIE_HTTPONLY')))
 CSRF_COOKIE_SAMESITE = os.getenv('DJANGO_CSRF_COOKIE_SAMESITE')
 CSRF_COOKIE_SECURE = bool(strtobool(os.getenv('DJANGO_CSRF_COOKIE_SECURE')))
-CSRF_USE_SESIONS = bool(strtobool(os.getenv('DJANGO_CSRF_USE_SESIONS')))
+CSRF_USE_SESSIONS = bool(strtobool(os.getenv('DJANGO_CSRF_USE_SESSIONS')))
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher'

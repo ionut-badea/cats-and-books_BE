@@ -9,6 +9,6 @@ class SubscriberAdmin(admin.ModelAdmin):
         (None, {'fields': ('email', 'name', 'status', 'terms')}),
     )
 
-    list_display = ('email', 'name', 'status', 'terms', 'created')
+    list_display = ('email', 'name', 'status', 'terms', 'created', 'updated')
     list_filter = ('status', 'terms', 'created')
     search_fields = ('email__icontains', 'name__icontains')
