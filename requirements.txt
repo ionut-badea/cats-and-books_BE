@@ -1,13 +1,13 @@
 aniso8601==7.0.0
 argon2-cffi==19.2.0
-asgiref==3.2.5
-autopep8==1.5
+asgiref==3.3.1
 cffi==1.14.0
-Django==3.0.4
+Django==3.1.5
 django-cors-headers==3.2.1
 django-filter==2.2.0
 django-graphql-jwt==0.3.0
 django-storages==1.9.1
+envtypes==0.3.1
 graphene==2.1.8
 graphene-django==2.9.0
 graphql-core==2.3.1
@@ -16,7 +16,6 @@ gunicorn==20.0.4
 Pillow==7.0.0
 promise==2.3
 psycopg2-binary==2.8.4
-pycodestyle==2.5.0
 pycparser==2.20
 PyJWT==1.7.1
 python-dateutil==2.8.1

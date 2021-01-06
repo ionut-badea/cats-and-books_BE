@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "/home/jack/.virtualenv/cats_and_books_BE/bin/python"
+    "python.pythonPath": "/home/jack/.virtualenv/cats-and-books_BE/bin/python",
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.enabled": true
 }

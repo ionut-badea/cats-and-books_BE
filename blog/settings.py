@@ -1,67 +1,58 @@
 import os
+from pathlib import Path
 import logging.config
 from dotenv import load_dotenv
-from datetime import timedelta
-from distutils.util import strtobool
+from envtypes import EnvTypes
 from corsheaders.defaults import default_headers, default_methods
 
 load_dotenv()
+et = EnvTypes(use_prefix=False)
 
 # General settings
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # CORS
-CORS_ALLOW_CREDENTIALS = bool(
-    strtobool(os.getenv('DJANGO_CORS_ALLOW_CREDENTIALS')))
-
+CORS_ALLOW_CREDENTIALS = False
 CORS_ALLOW_HEADERS = list(default_headers)
-
 CORS_ALLOW_METHODS = list(default_methods)
+CORS_ALLOWED_ORIGINS = ['http://localhost:8000',
+                        'https://cats-and-books.netlify.app']
 
-CORS_ORIGIN_ALLOW_ALL = bool(
-    strtobool(os.getenv('DJANGO_CORS_ORIGIN_ALLOW_ALL')))
-
-CORS_ORIGIN_WHITELIST = os.getenv('DJANGO_CORS_ORIGIN_WHITELIST').split(',')
 
 # DataBase
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.{}'.format(
-            os.getenv('DJANGO_DEFAULT_DATABASE_ENGINE')
-        ),
-        'NAME': os.getenv('DJANGO_DEFAULT_DATABASE_NAME'),
-        'USER': os.getenv('DJANGO_DEFAULT_DATABASE_USER'),
-        'PASSWORD': os.getenv('DJANGO_DEFAULT_DATABASE_PASSWORD'),
-        'HOST': os.getenv('DJANGO_DEFAULT_DATABASE_HOST'),
-        'PORT': os.getenv('DJANGO_DEFAULT_DATABASE_PORT'),
+        'ENGINE': f'django.db.backends.{et.set_env("DB_ENGINE")}',
+        'NAME': et.set_env("DB_NAME"),
+        'USER': et.set_env("DB_USER"),
+        'PASSWORD': et.set_env("DB_PASSWORD"),
+        'HOST': et.set_env("DB_HOST"),
+        'PORT': et.set_env("DB_PORT"),
     }
 }
 
 
 # Debugging
-DEBUG = bool(strtobool(os.getenv('DJANGO_DEBUG')))
+DEBUG = True if et.set_env('DEBUG') else False
+
 
 # Email
-ADMINS = os.getenv('DJANGO_ADMINS')
+ADMINS = [et.set_env('ADMINS')]
 MANAGERS = ADMINS
 
 
 # Files
-MEDIA_ROOT = os.path.join(BASE_DIR, os.getenv('DJANGO_MEDIA_ROOT'))
-
-MEDIA_URL = os.getenv('DJANGO_MEDIA_URL')
-
-STATIC_ROOT = os.path.join(BASE_DIR, os.getenv('DJANGO_STATIC_ROOT'))
-
-STATIC_URL = os.getenv('DJANGO_STATIC_URL')
-
+MEDIA_ROOT = 'media'
+MEDIA_URL = '/media/'
+STATIC_ROOT = 'static'
+STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Globalization
-FIRST_DAY_OF_WEEK = int(os.getenv('DJANGO_FIRST_DAY_OF_WEEK'))
 
-LANGUAGE_CODE = os.getenv('DJANGO_LANGUAGE_CODE')
+# Globalization
+FIRST_DAY_OF_WEEK = 1
+LANGUAGE_CODE = 'en-us'
 
 
 # GraphQL
@@ -72,21 +63,12 @@ GRAPHENE = {
 }
 
 GRAPHQL_JWT = {
-    'JWT_ALGORITHM': os.getenv('DJANGO_JWT_ALGORITHM'),
-    'JWT_ALLOW_ARGUMENT':
-        bool(strtobool(os.getenv('DJANGO_JWT_ALLOW_ARGUMENT'))),
-    'JWT_EXPIRATION_DELTA':
-        timedelta(minutes=int(os.getenv('DJANGO_JWT_EXPIRATION_DELTA'))),
-    'JWT_LONG_RUNNING_REFRESH_TOKEN':
-        bool(strtobool(os.getenv('DJANGO_JWT_LONG_RUNNING_REFRESH_TOKEN'))),
+    'JWT_ALGORITHM': 'HS512',
+    'JWT_SECRET_KEY': et.set_env('JWT_SECRET_KEY'),
+    'JWT_VERIFY_EXPIRATION': True,
     'JWT_REFRESH_EXPIRED_HANDLER': lambda orig_iat, context: False,
-    'JWT_REFRESH_EXPIRATION_DELTA':
-        timedelta(days=int(os.getenv('DJANGO_JWT_REFRESH_EXPIRATION_DELTA'))),
-    'JWT_SECRET_KEY': os.getenv('DJANGO_JWT_SECRET_KEY'),
-    'JWT_VERIFY': bool(strtobool(os.getenv('DJANGO_JWT_VERIFY'))),
-    'JWT_VERIFY_EXPIRATION':
-        bool(strtobool(os.getenv('DJANGO_JWT_VERIFY_EXPIRATION'))),
 }
+
 
 # HTTP
 MIDDLEWARE = [
@@ -100,15 +82,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 WSGI_APPLICATION = 'blog.wsgi.application'
 
 
 # Logging
 LOGGING_CONFIG = None
-
-LOGLEVEL = os.getenv('DJANGO_LOGLEVEL').upper()
-
+LOGLEVEL = 'ERROR' if not DEBUG else 'INFO'
 logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
@@ -152,22 +131,21 @@ INSTALLED_APPS = [
 
 
 # Security
-# ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
-ALLOWED_HOSTS = ['localhost', 'cats-and-books.herokuapp.com']
-AUTH_USER_MODEL = os.getenv('DJANGO_AUTH_USER_MODEL')
-
+ALLOWED_HOSTS = et.set_env('ALLOWED_HOSTS')
+AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = [
     'graphql_jwt.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
-
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 12
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -176,37 +154,28 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-CSRF_COOKIE_AGE = int(os.getenv('DJANGO_CSRF_COOKIE_AGE'))
-CSRF_COOKIE_HTTPONLY = bool(
-    strtobool(os.getenv('DJANGO_CSRF_COOKIE_HTTPONLY')))
-CSRF_COOKIE_SAMESITE = os.getenv('DJANGO_CSRF_COOKIE_SAMESITE')
-CSRF_COOKIE_SECURE = bool(strtobool(os.getenv('DJANGO_CSRF_COOKIE_SECURE')))
-CSRF_USE_SESSIONS = bool(strtobool(os.getenv('DJANGO_CSRF_USE_SESSIONS')))
-
+CSRF_COOKIE_AGE = 31449600
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_SECURE = True if not DEBUG else False
+CSRF_USE_SESSIONS = False
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher'
 ]
+SESSION_COOKIE_AGE = 1209600
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SECURE = True if not DEBUG else False
+SECRET_KEY = et.set_env('SECRET_KEY')
+SECURE_HSTS_SECONDS = 3600 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True if not DEBUG else False
+SECURE_SSL_REDIRECT = True if not DEBUG else False
+SECURE_REFERRER_POLICY = 'same-origin'
 
-SESSION_COOKIE_AGE = int(os.getenv('DJANGO_SESSION_COOKIE_AGE'))
-SESSION_COOKIE_HTTPONLY = bool(
-    strtobool(os.getenv('DJANGO_SESSION_COOKIE_HTTPONLY')))
-SESSION_COOKIE_SAMESITE = os.getenv('DJANGO_SESSION_COOKIE_SAMESITE')
-SESSION_COOKIE_SECURE = bool(
-    strtobool(os.getenv('DJANGO_SESSION_COOKIE_SECURE')))
-
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-SECURE_BROWSER_XSS_FILTER = os.getenv('DJANGO_SECURE_BROWSER_XSS_FILTER')
-SECURE_HSTS_SECONDS = int(os.getenv('DJANGO_SECURE_HSTS_SECONDS'))
-SECURE_SSL_REDIRECT = bool(strtobool(os.getenv('DJANGO_SECURE_SSL_REDIRECT')))
-SECURE_HSTS_INCLUDE_SUBDOMAINS = bool(
-    strtobool(os.getenv('DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS')))
-SECURE_REFERRER_POLICY = True
-SECURE_HSTS_PRELOAD = bool(strtobool(os.getenv('DJANGO_SECURE_HSTS_PRELOAD')))
 
 # Templates
 TEMNPALTES_DIR = os.path.join(BASE_DIR, 'templates')
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -225,4 +194,4 @@ TEMPLATES = [
 
 
 # URLs
-ROOT_URLCONF = os.getenv('DJANGO_ROOT_URLCONF')
+ROOT_URLCONF = 'blog.urls'
