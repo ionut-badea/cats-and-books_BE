@@ -40,7 +40,7 @@ DATABASES = {
 
 
 # Debugging
-DEBUG = False or bool(strtobool(os.getenv('DJANGO_DEBUG')))
+DEBUG = bool(strtobool(os.getenv('DJANGO_DEBUG')))
 
 # Email
 ADMINS = os.getenv('DJANGO_ADMINS')
