@@ -24,7 +24,6 @@ CORS_ORIGIN_ALLOW_ALL = bool(
 
 CORS_ORIGIN_WHITELIST = os.getenv('DJANGO_CORS_ORIGIN_WHITELIST').split(',')
 
-
 # DataBase
 DATABASES = {
     'default': {
@@ -41,8 +40,7 @@ DATABASES = {
 
 
 # Debugging
-DEBUG = bool(strtobool(os.getenv('DJANGO_DEBUG')))
-
+DEBUG = False or bool(strtobool(os.getenv('DJANGO_DEBUG')))
 
 # Email
 ADMINS = os.getenv('DJANGO_ADMINS')
@@ -58,19 +56,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, os.getenv('DJANGO_STATIC_ROOT'))
 
 STATIC_URL = os.getenv('DJANGO_STATIC_URL')
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Globalization
 FIRST_DAY_OF_WEEK = int(os.getenv('DJANGO_FIRST_DAY_OF_WEEK'))
 
 LANGUAGE_CODE = os.getenv('DJANGO_LANGUAGE_CODE')
-
-TIME_ZONE = os.getenv('DJANGO_TIME_ZONE')
-
-USE_I18N = bool(strtobool(os.getenv('DJANGO_I18N')))
-
-USE_L10N = bool(strtobool(os.getenv('DJANGO_L10N')))
-
-USE_TZ = bool(strtobool(os.getenv('DJANGO_TZ')))
 
 
 # GraphQL
@@ -100,6 +91,7 @@ GRAPHQL_JWT = {
 # HTTP
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -160,7 +152,8 @@ INSTALLED_APPS = [
 
 
 # Security
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
+# ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = ['localhost', 'cats-and-books.herokuapp.com']
 AUTH_USER_MODEL = os.getenv('DJANGO_AUTH_USER_MODEL')
 
 AUTHENTICATION_BACKENDS = [
@@ -203,7 +196,14 @@ SESSION_COOKIE_SECURE = bool(
     strtobool(os.getenv('DJANGO_SESSION_COOKIE_SECURE')))
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-
+SECURE_BROWSER_XSS_FILTER = os.getenv('DJANGO_SECURE_BROWSER_XSS_FILTER')
+SECURE_HSTS_SECONDS = int(os.getenv('DJANGO_SECURE_HSTS_SECONDS'))
+SECURE_SSL_REDIRECT = bool(strtobool(os.getenv('DJANGO_SECURE_SSL_REDIRECT')))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = bool(
+    strtobool(os.getenv('DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS')))
+SECURE_REFERRER_POLICY = bool(strtobool(
+    os.getenv('DJANGO_SECURE_REFERRER_POLICY')))
+SECURE_HSTS_PRELOAD = bool(strtobool(os.getenv('DJANGO_SECURE_HSTS_PRELOAD')))
 
 # Templates
 TEMNPALTES_DIR = os.path.join(BASE_DIR, 'templates')
