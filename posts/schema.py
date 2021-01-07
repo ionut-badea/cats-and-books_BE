@@ -261,4 +261,7 @@ class Mutation(ObjectType):
     add_image = AddImage.Field()
     create_category = CreateCategory.Field()
     create_tag = CreateTag.Field()
+
+
+class MutationComment(ObjectType):
     add_comment = AddComment.Field()

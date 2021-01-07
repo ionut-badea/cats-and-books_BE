@@ -7,27 +7,23 @@ from accounts.schema import (Query as Users,
 from contacts.schema import (Query as Messages,
                              Mutation as AddMessage)
 from posts.schema import (Query as Posts,
-                          Mutation as CreatePost)
+                          Mutation as CreatePost,
+                          MutationComment as AddComment)
 from subscription.schema import (Query as Subscribers,
                                  Mutation as AddSubscriber)
 
 
-class Query(
-    Users,
+class PrivateQuery(
     Messages,
-    Posts,
     Subscribers,
     graphene.ObjectType,
 ):
-    '''Get objects from database'''
     pass
 
 
-class Mutation(
+class PrivateMutation(
     CreateUser,
-    AddMessage,
     CreatePost,
-    AddSubscriber,
     graphene.ObjectType,
 ):
     '''Add objects to database'''
@@ -37,4 +33,24 @@ class Mutation(
     revoke = graphql_jwt.relay.Revoke.Field()
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+class PublicQuery(
+    Users,
+    Posts,
+
+    graphene.ObjectType,
+):
+    '''Get objects from database'''
+    pass
+
+
+class PublicMutation(
+    AddComment,
+    AddMessage,
+    AddSubscriber,
+    graphene.ObjectType,
+):
+    pass
+
+
+public_schema = graphene.Schema(query=PublicQuery, mutation=PublicMutation)
+private_schema = graphene.Schema(query=PrivateQuery, mutation=PrivateMutation)

@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # CORS
-CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = list(default_headers)
 CORS_ALLOW_METHODS = list(default_methods)
 CORS_ALLOWED_ORIGINS = ['http://127.0.0.2:3000',
@@ -158,6 +158,7 @@ CSRF_COOKIE_AGE = 31449600
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = True if not DEBUG else False
+CSRF_TRUSTED_ORIGINS = ['127.0.0.2', 'cats-and-books.netlify.app']
 CSRF_USE_SESSIONS = False
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher'
