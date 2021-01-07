@@ -131,7 +131,7 @@ INSTALLED_APPS = [
 
 
 # Security
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cats-and-books.herokuapp.com ']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cats-and-books.herokuapp.com']
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = [
     'graphql_jwt.backends.JSONWebTokenBackend',
