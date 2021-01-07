@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 CORS_ALLOW_CREDENTIALS = False
 CORS_ALLOW_HEADERS = list(default_headers)
 CORS_ALLOW_METHODS = list(default_methods)
-CORS_ALLOWED_ORIGINS = ['http://localhost:8000',
+CORS_ALLOWED_ORIGINS = ['http://127.0.0.2:3000',
                         'https://cats-and-books.netlify.app']
 
 
@@ -131,7 +131,7 @@ INSTALLED_APPS = [
 
 
 # Security
-ALLOWED_HOSTS = et.set_env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cats-and-books.herokuapp.com ']
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = [
     'graphql_jwt.backends.JSONWebTokenBackend',
@@ -155,15 +155,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 CSRF_COOKIE_AGE = 31449600
-CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = True if not DEBUG else False
 CSRF_USE_SESSIONS = False
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher'
 ]
 SESSION_COOKIE_AGE = 1209600
-SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True if not DEBUG else False
 SESSION_COOKIE_SAMESITE = 'Strict'
 SESSION_COOKIE_SECURE = True if not DEBUG else False
 SECRET_KEY = et.set_env('SECRET_KEY')
@@ -171,7 +171,7 @@ SECURE_HSTS_SECONDS = 3600 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True if not DEBUG else False
 SECURE_SSL_REDIRECT = True if not DEBUG else False
-SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_REFERRER_POLICY = 'origin-when-cross-origin'
 
 
 # Templates

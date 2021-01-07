@@ -18,7 +18,6 @@ from django.urls import path
 from .settings import DEBUG, MEDIA_ROOT, MEDIA_URL
 from django.conf.urls.static import static
 from graphene_django.views import GraphQLView
-from graphql_jwt.decorators import jwt_cookie
 from .schema import schema
 
 urlpatterns = [
