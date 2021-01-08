@@ -5,7 +5,6 @@ from django.utils.text import slugify
 from blog.settings import AUTH_USER_MODEL as User
 from django.utils import timezone
 from django.urls import reverse
-import datetime
 import uuid
 
 
@@ -138,10 +137,6 @@ class Article(models.Model):
             self.abstract = f'{self.body[0:300]}...'
         elif(not self.abstract and len(self.body) < 300):
             self.abstract = f'{self.body}'
-        # if self.published:
-        #     print("published DATE", self.published)
-        #     self.year = Extract(self.published, 'year')
-        #     self.month = Extract(self.published, 'month')
         self.slug = slugify(self.title)
 
         return super(Article, self).save(*args, **kwargs)

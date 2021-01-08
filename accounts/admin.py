@@ -27,7 +27,7 @@ class UserAdmin(admin.ModelAdmin):
          )
     )
     form = CustomUserChangeForm
-    add_form = CustomUserCreationForm
+    # add_form = CustomUserCreationForm
     change_password = CustomPasswordCahngeForm
     list_display = ('username', 'email', 'first_name',
                     'last_name', 'is_active', 'is_staff', 'is_superuser',
